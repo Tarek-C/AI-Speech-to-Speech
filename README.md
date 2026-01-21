@@ -8,7 +8,16 @@ The model also automatically handles VAD (Voice Activity Detection) meaning ther
 Things to keep in mind:
 Requires the installation of pyaudio, websocket, and JSON (depending on the OS it may come pre-installed with JSON)
 
-pyAudio uses the default audio device specified by the OS it is important that you configure your audio device accordingly
+pyAudio uses the default audio device unless otherwise specified.
+Specify input and output devices in the streams by setting the parameters input_device_index and output_device_index respectively.
+One can find their devices' indices by running:
+
+for i in range(p.get_device_count()):
+    info=p.get_device_info_by_index(i)
+    print(f"Device {i}")
+    print("\n")
+    print(info)
+
 
 OpenAI's realtime API runs on a websocket connection which only accepts messages in the form of JSON formatted strings
 
