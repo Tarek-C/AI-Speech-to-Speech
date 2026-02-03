@@ -9,6 +9,7 @@ This project is a **Raspberry Pi** application that uses a physical phone (or GP
 - **Entry point:** `gpio_speech_main.py` — watches a GPIO pin for “phone off hook,” then starts dial tone and WebSocket.
 - **Core logic:** `gpio_speech_body.py` — WebSocket client, audio I/O, resampling, and OpenAI Realtime session handling.
 - **Trigger:** GPIO pin 4 (default) — high = phone picked up; low = phone put down (connection closes).
+- **For Startup Operation:** Read startup_instructions.txt
 
 ---
 
