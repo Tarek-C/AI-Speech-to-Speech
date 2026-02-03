@@ -7,3 +7,4 @@ pyaudio
 numpy
 scipy
 gpiozero
+lgpio
