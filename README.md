@@ -91,7 +91,7 @@ Or install manually from `include.txt`. The venv can still use system packages (
 
 - **GPIO:** `gpiozero` uses the system’s GPIO; no extra install if you’re on Raspberry Pi OS.
 
-### 4. Find Your Audio Device Indices and Sample Rate
+### 4. Find Your Audio Device Indices and Sample Rate (Only do this step if you're not using Pulse for your output and a USB device for your input)
 
 Run the helper script:
 
