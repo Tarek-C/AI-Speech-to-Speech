@@ -8,10 +8,20 @@ import pyaudio
 import numpy as np
 from scipy.signal import resample
 
-#Specifiy device indices for I/O and input device sampling rate, found by running audio_index.py in the for_testing folder
+#Specifiy device indices for I/O and input device sampling rate
 INPUT_INDEX=1
 OUTPUT_INDEX=7
 native_input_rate=48000
+
+#The following for loop sets the output to pulse audio, and the input to a USB device along with it sample rate
+#If you would like to use neither of these simply delete the for loop and manually find your device indices using audio device index in for_testing/audio_tests
+for i in range(p.get_device_count()):
+    info=p.get_device_info_by_index(i)
+    if 'Pulse' in info['name']:
+        OUTPUT_INDEX=i-1
+    if 'USB' in info['name']:
+        INPUT_INDEX=i-1
+        native_input_rate=int(info['defaultSampleRate'])
 
 #openAI realtime API key
 OPENAI_API_KEY=""
