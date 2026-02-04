@@ -3,13 +3,6 @@ from gpiozero import DigitalInputDevice
 pin = 4
 inp = DigitalInputDevice(pin, pull_up=False)
 
-print("Pick up the phone!")
-
-#Listens for phone pick up
-while True:
-    if inp.value:
-        break
-
 #Waits for phone put down
 def close_listener():
     while True:
@@ -18,29 +11,36 @@ def close_listener():
             ws_close()
             break
 
-#plays dial tone
-thread_dial=threading.Thread(target=play_dial)
-thread_dial.start()
+while True:
 
-#Starts websocket but only after the dial tone is finished
-thread_run = threading.Thread(target=run_ws)
-thread_dial.join()
-thread_run.start()
+    print("Pick up the phone!")
 
-#Listens for phone put down
-thread_close=threading.Thread(target=close_listener)
-thread_close.start()
+    #Listens for phone pick up
+    while True:
+        if inp.value:
+            break
 
-time.sleep(1)
-# Start the input handler in its own thread
-input_thread = threading.Thread(target=input_listener)
-input_thread.start()
+    #plays dial tone
+    thread_dial=threading.Thread(target=play_dial)
+    thread_dial.start()
 
+    #Starts websocket but only after the dial tone is finished
+    thread_run = threading.Thread(target=run_ws)
+    thread_dial.join()
+    thread_run.start()
 
+    time.sleep(1)
+    # Start the input handler in its own thread
+    input_thread = threading.Thread(target=input_listener)
+    input_thread.start()
 
+    #Listens for phone put down
+    thread_close=threading.Thread(target=close_listener)
+    thread_close.start()
+ 
 
-# Wait for all threads to finish before exiting
-thread_close.join()
-thread_run.join()
-input_thread.join()
-print("Program finished")
+    # Wait for all threads to finish before exiting
+    thread_close.join()
+    thread_run.join()
+    input_thread.join()
+    print("Program finished")
