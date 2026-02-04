@@ -19,6 +19,8 @@ def terminate_listener():
     quit()
 
 while True:
+    thread_terminate=threading.Thread(target=terminate_listener)
+    thread_terminate.start()
 
     print("Pick up the phone!")
 
