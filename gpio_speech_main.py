@@ -1,5 +1,6 @@
 from gpio_speech_body import *
 from gpiozero import DigitalInputDevice
+import os
 pin = 4
 inp = DigitalInputDevice(pin, pull_up=False)
 
@@ -16,7 +17,7 @@ def terminate_listener():
     while prompt.lower()!='stop':
         prompt=input("Type stop to exit: ")
     close_audiostreams()
-    quit()
+    os._exit(0)
 
 while True:
     thread_terminate=threading.Thread(target=terminate_listener)
