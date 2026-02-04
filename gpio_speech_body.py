@@ -149,9 +149,6 @@ def play_audio_chunk(audio_bytes):
 #Closes websocket and audio streams
 def ws_close():
     ws.close()
-    input_stream.close()
-    output_stream.close()
-    p.terminate()
 
 ws = websocket.WebSocketApp(
     url, #End point of web socket

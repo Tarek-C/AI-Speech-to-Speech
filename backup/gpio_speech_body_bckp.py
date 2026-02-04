@@ -149,9 +149,6 @@ def play_audio_chunk(audio_bytes):
 #Closes websocket and audio streams
 def ws_close():
     ws.close()
-    input_stream.close()
-    output_stream.close()
-    p.terminate()
 
 ws = websocket.WebSocketApp(
     url, #End point of web socket
@@ -172,7 +169,7 @@ def microphone_thread(ws):
         #Read audio from mic 1024 frames at a time
         raw_audio_chunk = input_stream.read(1024, exception_on_overflow=False)
         #Resample the audio chunks to 24kHz
-	audio_chunk=resample_to_24kHz(raw_audio_chunk)
+        audio_chunk=resample_to_24kHz(raw_audio_chunk)
         #Encodes PCM data into base 64 then formats that into JSON string
         audio_b64 = base64.b64encode(audio_chunk).decode()
         #Send the audio data over the websocket
