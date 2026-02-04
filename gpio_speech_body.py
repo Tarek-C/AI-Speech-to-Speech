@@ -13,16 +13,20 @@ INPUT_INDEX=1
 OUTPUT_INDEX=7
 native_input_rate=48000
 
+#Start pyaudio
+global p
+p=pyaudio.PyAudio()
+
 #The following for loop sets the output to pulse audio, and the input to a USB device along with it sample rate
 #If you would like to use neither of these simply delete the for loop and manually find your device indices using audio device index in for_testing/audio_tests
 for i in range(p.get_device_count()):
     info=p.get_device_info_by_index(i)
-    if 'Pulse' in info['name']:
-        OUTPUT_INDEX=i-1
+    if 'pulse' in info['name']:
+        OUTPUT_INDEX=i
     if 'USB' in info['name']:
-        INPUT_INDEX=i-1
+        INPUT_INDEX=i
         native_input_rate=int(info['defaultSampleRate'])
-
+        
 #openAI realtime API key
 OPENAI_API_KEY=""
 
@@ -35,8 +39,7 @@ headers = ["Authorization: Bearer " + OPENAI_API_KEY]
 #Define audio input formatting
 #Opean AI realtime API works with 16bit PCM signals at a rate of 24kHz, mono
 #1024 frames per buffer is a conventional middleground size, can be adjusted as needed
-global input_stream, p
-p=pyaudio.PyAudio()
+global input_stream
 input_stream = p.open(format=pyaudio.paInt16,
                 channels=1,
                 rate=native_input_rate,
@@ -138,7 +141,6 @@ def on_message(ws, message):
         play_audio_chunk(audio_bytes)
 
     if data["type"]=="response.done":
-        #p.set_input_device_volume(INPUT_INDEX, 100.0)
         print("Response complete!")
 
 def play_audio_chunk(audio_bytes):
@@ -146,9 +148,15 @@ def play_audio_chunk(audio_bytes):
     #Writes to output stream initialized through pyaudio
     output_stream.write(audio_bytes)
 
-#Closes websocket and audio streams
+#Closes websocket
 def ws_close():
     ws.close()
+
+#Closes audio dreams
+def close_audiostreams():
+    input_stream.close()
+    output_stream.close()
+    p.terminate()
 
 ws = websocket.WebSocketApp(
     url, #End point of web socket
@@ -165,7 +173,7 @@ def run_ws():
 
 def microphone_thread(ws):
     #While the web socket connection is established
-    while ws.sock:
+    while ws.sock.connected:
         #Read audio from mic 1024 frames at a time
         raw_audio_chunk = input_stream.read(1024, exception_on_overflow=False)
         #Resample the audio chunks to 24kHz
