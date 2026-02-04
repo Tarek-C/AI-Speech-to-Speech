@@ -138,7 +138,6 @@ def on_message(ws, message):
         play_audio_chunk(audio_bytes)
 
     if data["type"]=="response.done":
-        #p.set_input_device_volume(INPUT_INDEX, 100.0)
         print("Response complete!")
 
 def play_audio_chunk(audio_bytes):
@@ -146,9 +145,15 @@ def play_audio_chunk(audio_bytes):
     #Writes to output stream initialized through pyaudio
     output_stream.write(audio_bytes)
 
-#Closes websocket and audio streams
+#Closes websocket
 def ws_close():
     ws.close()
+
+#Closes audio dreams
+def close_audiostreams():
+    input_stream.close()
+    output_stream.close()
+    p.terminate()
 
 ws = websocket.WebSocketApp(
     url, #End point of web socket

@@ -11,6 +11,13 @@ def close_listener():
             ws_close()
             break
 
+def terminate_listener():
+    prompt=input("Type stop to exit: ")
+    while prompt.lower()!='stop':
+        prompt=input("Type stop to exit: ")
+    close_audiostreams()
+    quit()
+
 while True:
 
     print("Pick up the phone!")
