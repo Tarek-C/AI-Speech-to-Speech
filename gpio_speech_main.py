@@ -53,4 +53,4 @@ while True:
     thread_close.join()
     thread_run.join()
     input_thread.join()
-    print("Program finished")
+    print("Conversation finished")
