@@ -18,9 +18,9 @@ native_input_rate=48000
 for i in range(p.get_device_count()):
     info=p.get_device_info_by_index(i)
     if 'pulse' in info['name']:
-        OUTPUT_INDEX=i-1
+        OUTPUT_INDEX=i
     if 'USB' in info['name']:
-        INPUT_INDEX=i-1
+        INPUT_INDEX=i
         native_input_rate=int(info['defaultSampleRate'])
 
 #openAI realtime API key
