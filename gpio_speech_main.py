@@ -1,5 +1,6 @@
 from gpio_speech_body import *
 from gpiozero import DigitalInputDevice
+import os
 pin = 4
 inp = DigitalInputDevice(pin, pull_up=False)
 
@@ -11,19 +12,26 @@ def close_listener():
             ws_close()
             break
 
-#Simulates phone pickup & putdown to resolve blank input bug on first pickup
-thread_run_pre=threading.Thread(target=run_ws)
-thread_run_pre.start()
+#def terminate_listener():
+ #   prompt=input("Type stop to exit: ")
+  #  while prompt.lower()!='stop':
+   #     prompt=input("Type stop to exit: ")
+    #close_audiostreams()
+    #os._exit(0)
 
-input_thread_pre = threading.Thread(target=input_listener)
-input_thread_pre.start()
+thread_run = threading.Thread(target=run_ws)
+input_thread = threading.Thread(target=input_listener)
 
+thread_run.start()
+input_thread.start()
 ws_close()
+thread_run.join()
+input_thread.join()
 
-thread_run_pre.join()
-input_thread_pre.join()
 
 while True:
+    #thread_terminate=threading.Thread(target=terminate_listener)
+    #thread_terminate.start()
 
     print("Pick up the phone!")
 
@@ -37,14 +45,14 @@ while True:
     thread_dial.start()
 
     #Starts websocket but only after the dial tone is finished
-    thread_run = threading.Thread(target=run_ws)
+    thread_run_two = threading.Thread(target=run_ws)
     thread_dial.join()
-    thread_run.start()
+    thread_run_two.start()
 
     time.sleep(1)
     # Start the input handler in its own thread
-    input_thread = threading.Thread(target=input_listener)
-    input_thread.start()
+    input_thread_two = threading.Thread(target=input_listener)
+    input_thread_two.start()
 
     #Listens for phone put down
     thread_close=threading.Thread(target=close_listener)
@@ -55,4 +63,4 @@ while True:
     thread_close.join()
     thread_run.join()
     input_thread.join()
-    print("Conversation finished")
+    print("Program finished")
