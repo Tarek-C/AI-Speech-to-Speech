@@ -11,6 +11,18 @@ def close_listener():
             ws_close()
             break
 
+#Simulates phone pickup & putdown to resolve blank input bug on first pickup
+thread_run_pre=threading.Thread(target=run_ws)
+thread_run_pre.start()
+
+input_thread_pre = threading.Thread(target=input_listener)
+input_thread_pre.start()
+
+ws_close()
+
+thread_run_pre.join()
+input_thread_pre.join()
+
 while True:
 
     print("Pick up the phone!")

@@ -17,7 +17,7 @@ native_input_rate=48000
 #If you would like to use neither of these simply delete the for loop and manually find your device indices using audio device index in for_testing/audio_tests
 for i in range(p.get_device_count()):
     info=p.get_device_info_by_index(i)
-    if 'Pulse' in info['name']:
+    if 'pulse' in info['name']:
         OUTPUT_INDEX=i-1
     if 'USB' in info['name']:
         INPUT_INDEX=i-1

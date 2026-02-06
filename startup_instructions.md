@@ -40,7 +40,7 @@ This guide outlines how to create a systemd service (so a program runs at boot) 
    sudo nano /etc/systemd/system/<service-name>.service
    ```
 
-2. **Paste a unit file like this** (replace all placeholders):
+2. **Paste a unit file like this** (replace all placeholders) (If not using USB):
 
    ```ini
    [Unit]
@@ -57,6 +57,45 @@ This guide outlines how to create a systemd service (so a program runs at boot) 
    [Install]
    WantedBy=multi-user.target #Ensures boot is still complete even if this fails
    ```
+
+2.1 **Paste a unit file like this (replace all placeholders) (If using USB):** 
+
+'''ini[Unit]
+Description=Audio Test Script
+After=pulseaudio.service sound.target
+# Wait for the system service to trigger USB audio
+After=usb-audio-trigger.service
+
+[Service]
+Type=simple
+Environment=XDG_RUNTIME_DIR=/run/user/<your_user_id>
+# Trigger udev with sudo (passwordless via sudoers file)
+ExecStartPre=/usr/bin/sudo /usr/bin/udevadm trigger --subsystem-match=sound --action=add
+ExecStartPre=/usr/bin/sudo /usr/bin/udevadm settle
+ExecStartPre=/bin/sleep 2
+ExecStart=/home/<your_username>/main_files/speech_start.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
+'''
+
+2.5 **Create the file for sudo permissions (If using USB)**
+'''bash
+sudo nano /etc/sudoers.d/udevadm-nopasswd
+'''ini
+# Allow user to run udevadm trigger without password
+<your_username> ALL=(ALL) NOPASSWD: /usr/bin/udevadm trigger --subsystem-match=sound --action=add
+<your_username> ALL=(ALL) NOPASSWD: /usr/bin/udevadm settle
+'''
+
+2.6 **Enable permissions (If using USB)**
+
+'''bash
+sudo chmod 0440 /etc/sudoers.d/udevadm-nopasswd
+'''
+
 
 3. **Enable and load the service:**
 
